@@ -1,0 +1,538 @@
+/* Design Selector */
+.design-selector {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 2rem;
+    background-color: white;
+    border-radius: 50px;
+    padding: 0.5rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    margin: 2rem auto;
+}
+
+.design-option {
+    padding: 0.8rem 1.5rem;
+    border: none;
+    background: none;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    border-radius: 30px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.design-option::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(106, 27, 154, 0.1), transparent);
+    transition: all 0.5s ease;
+}
+
+.design-option:hover::before {
+    left: 100%;
+}
+
+.design-option.active {
+    background: linear-gradient(90deg, var(--primary-color), var(--dark-color));
+    color: white;
+    box-shadow: 0 4px 15px rgba(106, 27, 154, 0.3);
+}
+
+/* Design Container */
+.design-container {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+
+.design-section {
+    display: none;
+    width: 100%;
+    background-color: white;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.design-section.active {
+    display: flex;
+    flex-wrap: wrap;
+    animation: slideUp 0.5s ease;
+}
+
+/* Preview Container */
+.preview-container {
+    flex: 1;
+    min-width: 300px;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+    border-radius: 20px 0 0 20px;
+    position: relative;
+}
+
+.garment-preview {
+    position: relative;
+    width: 100%;
+    height: 400px;
+    margin-bottom: 2rem;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    touch-action: none;
+}
+
+.zoom-controls {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 10;
+    display: flex;
+    gap: 5px;
+    background: rgba(255, 255, 255, 0.8);
+    padding: 5px;
+    border-radius: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.zoom-btn {
+    width: 30px;
+    height: 30px;
+    border: none;
+    border-radius: 50%;
+    background: white;
+    color: var(--primary-color);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.zoom-btn:hover {
+    background: var(--primary-color);
+    color: white;
+    transform: scale(1.1);
+}
+
+.garment-wrapper {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transform-origin: center center;
+    transition: transform 0.3s ease;
+}
+
+.base-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    position: relative;
+    z-index: 1;
+}
+
+.fabric-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    mix-blend-mode: multiply;
+    z-index: 2;
+    transition: all 0.3s ease;
+}
+
+.pocket-overlay, .collar-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    z-index: 3;
+    transition: all 0.3s ease;
+}
+
+.modification-point {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background-color: var(--accent-color);
+    border-radius: 50%;
+    border: 2px solid white;
+    cursor: move;
+    z-index: 10;
+    box-shadow: 0 0 0 4px rgba(0, 191, 165, 0.3);
+    transition: all 0.3s ease;
+}
+
+.modification-point:hover {
+    transform: scale(1.2);
+    box-shadow: 0 0 0 6px rgba(0, 191, 165, 0.3);
+    animation: pulse 1.5s infinite;
+}
+
+.save-share {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+}
+
+/* Customization Options */
+.customization-options {
+    flex: 1;
+    min-width: 300px;
+    padding: 2rem;
+    background-color: white;
+    border-radius: 0 20px 20px 0;
+}
+
+.option-group {
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid #eee;
+    animation: fadeIn 0.5s ease forwards;
+}
+
+.option-group:last-child {
+    border-bottom: none;
+}
+
+.option-group h3 {
+    margin-bottom: 1rem;
+    color: var(--primary-color);
+    font-size: 1.2rem;
+    position: relative;
+    display: inline-block;
+}
+
+.option-group h3::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 50px;
+    height: 2px;
+    background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+}
+
+.size-inputs {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.input-group label {
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
+.input-group input[type="range"] {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 8px;
+    border-radius: 4px;
+    background: linear-gradient(90deg, var(--primary-color), var(--dark-color));
+    outline: none;
+    margin: 1rem 0;
+    transition: all 0.3s ease;
+}
+
+.input-group input[type="range"]:hover {
+    height: 10px;
+}
+
+.input-group input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: white;
+    border: 3px solid var(--primary-color);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.input-group input[type="range"]::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.value-display {
+    font-weight: 600;
+    color: var(--primary-color);
+    text-align: center;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+}
+
+.input-group:hover .value-display {
+    transform: scale(1.1);
+}
+
+/* Fit Options */
+.fit-options {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.fit-option {
+    padding: 0.8rem 1.2rem;
+    border: 2px solid #ddd;
+    border-radius: 30px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.fit-option.active {
+    background: linear-gradient(90deg, var(--primary-color), var(--dark-color));
+    color: white;
+    border-color: var(--primary-color);
+    box-shadow: 0 4px 10px rgba(106, 27, 154, 0.3);
+}
+
+.fit-option:hover:not(.active) {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+    transform: translateY(-3px);
+}
+
+.fit-icon {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: currentColor;
+    position: relative;
+}
+
+.fit-icon::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80%;
+    height: 80%;
+    border-radius: inherit;
+    background-color: white;
+}
+
+.fit-icon.slim::before { width: 60%; height: 60%; }
+.fit-icon.regular::before { width: 70%; height: 70%; }
+.fit-icon.relaxed::before { width: 80%; height: 80%; }
+.fit-icon.baggy::before { width: 90%; height: 90%; }
+.fit-icon.oversized::before { width: 95%; height: 95%; }
+
+/* Fabric Options */
+.fabric-options {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.fabric-option {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    padding: 0.5rem;
+    border-radius: 8px;
+}
+
+.fabric-option.active {
+    background-color: rgba(106, 27, 154, 0.1);
+    border: 2px solid var(--primary-color);
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.fabric-option:hover {
+    transform: translateY(-5px);
+}
+
+.fabric-sample {
+    width: 60px;
+    height: 60px;
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    border: 2px solid white;
+    background-size: cover;
+    background-position: center;
+    transition: all 0.3s ease;
+}
+
+.fabric-option:hover .fabric-sample {
+    transform: rotate(5deg) scale(1.1);
+}
+
+/* Color Options */
+.color-options {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.color-picker {
+    width: 60px;
+    height: 60px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.color-picker:hover {
+    transform: scale(1.1);
+}
+
+.preset-colors {
+    display: flex;
+    gap: 0.8rem;
+}
+
+.preset-color {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 2px solid white;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.preset-color:hover {
+    transform: scale(1.2);
+    box-shadow: 0 0 0 3px rgba(106, 27, 154, 0.3);
+}
+
+/* Pocket & Collar Options */
+.pocket-options, .collar-options {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.pocket-option, .collar-option {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 100px;
+}
+
+.pocket-option:hover, .collar-option:hover {
+    transform: translateY(-5px);
+}
+
+.pocket-option.active, .collar-option.active {
+    border-color: var(--primary-color);
+    background-color: rgba(106, 27, 154, 0.1);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.pocket-icon, .collar-icon {
+    width: 40px;
+    height: 40px;
+    margin-bottom: 0.5rem;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    transition: all 0.3s ease;
+}
+
+.pocket-icon.standard { background-image: url('https://i.imgur.com/abc123.png'); }
+.pocket-icon.cargo { background-image: url('https://i.imgur.com/def456.png'); }
+.pocket-icon.hidden { background-image: url('https://i.imgur.com/ghi789.png'); }
+.pocket-icon.none { background-image: url('https://i.imgur.com/jkl012.png'); }
+.pocket-icon.double { background-image: url('https://i.imgur.com/mno345.png'); }
+
+.collar-icon.classic { background-image: url('https://i.imgur.com/pqr678.png'); }
+.collar-icon.button-down { background-image: url('https://i.imgur.com/stu901.png'); }
+.collar-icon.mandarin { background-image: url('https://i.imgur.com/vwx234.png'); }
+.collar-icon.band { background-image: url('https://i.imgur.com/yzA567.png'); }
+
+/* Responsive Styles */
+@media (max-width: 992px) {
+    .design-section.active {
+        flex-direction: column;
+    }
+    
+    .preview-container {
+        border-radius: 20px 20px 0 0;
+    }
+    
+    .customization-options {
+        border-radius: 0 0 20px 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    .size-inputs {
+        grid-template-columns: 1fr;
+    }
+    
+    .garment-preview {
+        height: 300px;
+    }
+}
+
+@media (max-width: 480px) {
+    .design-option {
+        padding: 0.6rem 1rem;
+        font-size: 0.9rem;
+    }
+    
+    .save-share {
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .btn {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .garment-preview {
+        width: 250px;
+        height: 350px;
+    }
+    
+    .fabric-options, .pocket-options, .collar-options {
+        justify-content: center;
+    }
+}

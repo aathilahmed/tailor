@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart | Enarmous</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/cart.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Order Limit Notice Styles - Added to existing styles */
+        .order-limit-notice {
+            background: linear-gradient(135deg, #ff6b6b, #ff8e8e);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            animation: pulseNotice 2s infinite;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .order-limit-notice::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+            transform: rotate(45deg);
+            animation: shine 3s infinite;
+        }
+        
+        .notice-icon {
+            font-size: 1.8rem;
+            flex-shrink: 0;
+        }
+        
+        .notice-content {
+            flex: 1;
+        }
+        
+        .notice-title {
+            font-weight: 700;
+            margin-bottom: 5px;
+            font-size: 1.1rem;
+        }
+        
+        .notice-text {
+            font-size: 0.95rem;
+            opacity: 0.9;
+        }
+        
+        @keyframes pulseNotice {
+            0% { transform: scale(1); box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3); }
+            50% { transform: scale(1.01); box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4); }
+            100% { transform: scale(1); box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3); }
+        }
+        
+        @keyframes shine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        /* Additional styles for cart items */
+        .cart-item {
+            display: flex;
+            gap: 1.5rem;
+            padding: 1.5rem;
+            border-bottom: 1px solid #e0e0e0;
+            align-items: center;
+        }
+        
+        .cart-item-image {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+        
+        .cart-item-details {
+            flex: 1;
+        }
+        
+        .cart-item-title {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: #2c3e50;
+        }
+        
+        .cart-item-options {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            margin-bottom: 0.5rem;
+        }
+        
+        .cart-item-price {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .cart-item-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+        
+        .quantity-selector {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .quantity-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #f1f1f1;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .quantity-input {
+            width: 40px;
+            text-align: center;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 0.3rem;
+        }
+        
+        .remove-item {
+            background: none;
+            border: none;
+            color: #e74c3c;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        /* Custom design styles */
+        .custom-design-badge {
+            background: #2196f3;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            margin-left: 8px;
+        }
+
+        .design-specs {
+            margin-top: 8px;
+            padding: 8px;
+            background: #f8f9fa;
+            border-radius: 4px;
+        }
+
+        .design-spec {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 4px;
+            font-size: 0.85rem;
+        }
+
+        .spec-label {
+            font-weight: 600;
+            color: #555;
+            min-width: 60px;
+        }
+
+        .spec-value {
+            color: #333;
+        }
+
+        .color-swatch {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            border: 1px solid #ddd;
+            vertical-align: middle;
+            margin-left: 4px;
+        }
+
+        /* Recommendation styles */
+        .recommendation-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .recommendation-item {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .recommendation-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .recommendation-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .recommendation-details {
+            padding: 1.5rem;
+        }
+
+        .recommendation-title {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            color: #2c3e50;
+        }
+
+        .recommendation-price {
+            font-weight: 600;
+            color: #e74c3c;
+            margin-bottom: 1rem;
+        }
+
+        .add-to-cart-btn {
+            width: 100%;
+            padding: 0.75rem;
+            background: #2c3e50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s ease;
+        }
+
+        .add-to-cart-btn:hover {
+            background: #1a252f;
+        }
+
+        /* Notification styles */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #4CAF50;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 5px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            min-width: 300px;
+            animation: slideIn 0.3s ease;
+        }
+
+        .notification.error {
+            background: #f44336;
+        }
+
+        .close-notification {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="gradient-bg">
+        <header>
+            <h1 class="logo">ENARMOUS</h1>
+            <nav>
+                <ul>
+                    <li><a href="index.php" class="nav-link">Home</a></li>
+                    <li><a href="design.html" class="nav-link">Design</a></li>
+                    <li><a href="tailor.html" class="nav-link">Tailors</a></li>
+                    <li><a href="account.html" class="nav-link">Account</a></li>
+                    <li><a href="cart.html" class="nav-link active cart-link"><i class="fas fa-shopping-cart"></i> <span class="cart-count">0</span></a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <main>
+            <section class="cart-section">
+                <h1>Your Shopping Cart</h1>
+                
+                <!-- Order Limit Notice - Added Section -->
+                <div class="order-limit-notice">
+                    <div class="notice-icon">
+                        <i class="fas fa-exclamation-circle"></i>
+                    </div>
+                    <div class="notice-content">
+                        <div class="notice-title">Important Notice</div>
+                        <div class="notice-text">Kindly limit your order to 5 items at a time for better service and faster delivery.</div>
+                    </div>
+                </div>
+                
+                <div class="cart-container">
+                    <div class="cart-items" id="cart-items">
+                        <!-- Cart items will be loaded here -->
+                        <div class="empty-cart">
+                            <i class="fas fa-shopping-cart"></i>
+                            <h2>Your cart is empty</h2>
+                            <p>Start designing your perfect outfit or browse our ready-to-wear collection</p>
+                            <a href="design.html" class="btn btn-primary">Start Designing</a>
+                        </div>
+                    </div>
+                    
+                    <div class="cart-summary">
+                        <h2>Order Summary</h2>
+                        <div class="summary-details">
+                            <div class="summary-row">
+                                <span>Subtotal</span>
+                                <span id="subtotal">$0.00</span>
+                            </div>
+                            <div class="summary-row">
+                                <span>Shipping</span>
+                                <span id="shipping">$0.00</span>
+                            </div>
+                            <div class="summary-row">
+                                <span>Tax</span>
+                                <span id="tax">$0.00</span>
+                            </div>
+                            <div class="summary-row total">
+                                <span>Total</span>
+                                <span id="total">$0.00</span>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" id="checkout-btn" disabled>Proceed to Checkout</button>
+                        <p class="secure-checkout">
+                            <i class="fas fa-lock"></i> Secure checkout
+                        </p>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="recommendations">
+                <h2>You Might Also Like</h2>
+                <div class="recommendation-grid" id="recommendation-grid">
+                    <div class="recommendation-item">
+                        <img src="images/jeams.jpg" alt="Classic White Shirt" class="recommendation-image">
+                        <div class="recommendation-details">
+                            <h3 class="recommendation-title">PREMIUM FADED DENIM</h3>
+                            <p class="recommendation-price">$18.99</p>
+                            <button class="add-to-cart-btn" data-product='{"name":"PREMIUM FADED DENIM","type":"Pant","price":18.99,"image":"images/jeams.jpg","fabric":"Denim","color":"Faded Blue","fit":"Regular","pockets":"6"}'>Add to Cart</button>
+                        </div>
+                    </div>
+                    <div class="recommendation-item">
+                        <img src="images/chinos.jpg" alt="Slim Fit Chinos" class="recommendation-image">
+                        <div class="recommendation-details">
+                            <h3 class="recommendation-title">SLIM CHINOS</h3>
+                            <p class="recommendation-price">$19.99</p>
+                            <button class="add-to-cart-btn" data-product='{"name":"SLIM CHINOS","type":"Pants","price":19.99,"image":"images/chinos.jpg","fabric":"Cotton","color":"Khaki","fit":"Slim","pockets":"4"}'>Add to Cart</button>
+                        </div>
+                    </div>
+                    <div class="recommendation-item">
+                        <img src="images/blue_jean.jpg" alt="Denim Jeans" class="recommendation-image">
+                        <div class="recommendation-details">
+                            <h3 class="recommendation-title">DENIM JEANS</h3>
+                            <p class="recommendation-price">$21.99</p>
+                            <button class="add-to-cart-btn" data-product='{"name":"DENIM JEANS","type":"Jeans","price":21.99,"image":"images/blue_jean.jpg","fabric":"Denim","color":"Blue","fit":"Slim","pockets":"5"}'>Add to Cart</button>
+                        </div>
+                    </div>
+                    <div class="recommendation-item">
+                        <img src="images/black_formal.jpg" alt="Casual Blue Shirt" class="recommendation-image">
+                        <div class="recommendation-details">
+                            <h3 class="recommendation-title">BROWN FORMAL PANT</h3>
+                            <p class="recommendation-price">$15.99</p>
+                            <button class="add-to-cart-btn" data-product='{"name":"BROWN FORMAL PANT","type":"Pants","price":15.99,"image":"images/black_formal.jpg","fabric":"Cotton","color":"Brown","fit":"Regular","pockets":"3"}'>Add to Cart</button>
+                        </div>
+                    </div>
+                    <div class="recommendation-item">
+                        <img src="images/brown_pant.jpg" alt="Formal Black Pants" class="recommendation-image">
+                        <div class="recommendation-details">
+                            <h3 class="recommendation-title">BLACK FORMAL PANT</h3>
+                            <p class="recommendation-price">$14.99</p>
+                            <button class="add-to-cart-btn" data-product='{"name":"BLACK FORMAL PANT","type":"Pants","price":14.99,"image":"images/brown_pant.jpg","fabric":"Cotten","color":"Black","fit":"Classic","pockets":"4"}'>Add to Cart</button>
+                        </div>
+                    </div>
+                    <div class="recommendation-item">
+                        <img src="images/pantforfinal.jpg" alt="Striped Dress Shirt" class="recommendation-image">
+                        <div class="recommendation-details">
+                            <h3 class="recommendation-title">POLO FIT SHIRT</h3>
+                            <p class="recommendation-price">$15.99</p>
+                            <button class="add-to-cart-btn" data-product='{"name":"POLO FIT PANTS","type":"Pants","price":15.99,"image":"images/pantforfinal.jpg","fabric":"Cotton","color":"Light Grey","fit":"Polo","pockets":"4"}'>Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <!-- Same footer as index.html -->
+        </footer>
+    </div>
+
+    <!-- Remove Item Modal -->
+    <div class="modal" id="remove-modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>Remove Item</h2>
+            <p>Are you sure you want to remove this item from your cart?</p>
+            <div class="modal-buttons">
+                <button class="btn btn-outline" id="cancel-remove">Cancel</button>
+                <button class="btn btn-primary" id="confirm-remove">Remove</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Order Confirmation Modal -->
+    <div class="modal" id="confirmation-modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <div class="confirmation-content">
+                <i class="fas fa-check-circle"></i>
+                <h2>Order Confirmed!</h2>
+                <p>Your order has been placed successfully.</p>
+                <p>A confirmation has been sent to your email.</p>
+                <button class="btn btn-primary" id="continue-shopping">Continue Shopping</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/cart.js"></script>
+</body>
+</html>

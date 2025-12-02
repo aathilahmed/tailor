@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tailor Profile | Enarmous</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/tailor.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&family=Playfair+Display:wght@700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Additional styles for the new features */
+        .review-form {
+            background: #f9f9f9;
+            padding: 25px;
+            border-radius: 8px;
+            margin-top: 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .submit-review {
+            background-color: #2a2a2a;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .submit-review:hover {
+            background-color: #000;
+            transform: translateY(-2px);
+        }
+
+        .thank-you-message {
+            display: none;
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px;
+            border-radius: 4px;
+            text-align: center;
+            margin-bottom: 20px;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Enhance the contact button */
+        #contact-tailor {
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #contact-tailor:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        #contact-tailor:active {
+            transform: translateY(1px);
+        }
+
+        #contact-tailor::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 5px;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.5);
+            opacity: 0;
+            border-radius: 100%;
+            transform: scale(1, 1) translate(-50%);
+            transform-origin: 50% 50%;
+        }
+
+        #contact-tailor:focus:not(:active)::after {
+            animation: ripple 1s ease-out;
+        }
+
+        @keyframes ripple {
+            0% {
+                transform: scale(0, 0);
+                opacity: 0.5;
+            }
+
+            100% {
+                transform: scale(20, 20);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="gradient-bg">
+        <header>
+            <h1 class="logo">ENARMOUS</h1>
+            <nav>
+                <ul>
+                    <li><a href="index.php" class="nav-link">Home</a></li>
+                    <li><a href="design.html" class="nav-link">Design</a></li>
+                    <li><a href="tailor.html" class="nav-link active">Tailors</a></li>
+                    <li><a href="account.html" class="nav-link">Account</a></li>
+                    <li><a href="cart.html" class="nav-link cart-link"><i class="fas fa-shopping-cart"></i> <span
+                                class="cart-count">0</span></a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <main>
+            <section class="tailor-profile">
+                <div class="tailor-header">
+                    <div class="tailor-image">
+                        <img id="tailor-img" src="images/tailor work3.jpg" alt="Tailor">
+                    </div>
+                    <div class="tailor-info">
+                        <h1 id="tailor-name"></h1>
+                        <div class="rating" id="tailor-rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star-half-alt"></i>
+                            <span id="review-count"></span>
+                        </div>
+                        <p class="specialty" id="tailor-specialty"></p>
+                        <div class="tailor-stats">
+                            <div class="stat">
+                                <i class="fas fa-trophy"></i>
+                                <span id="experience">5+ years</span>
+                            </div>
+                            <div class="stat">
+                                <i class="fas fa-tshirt"></i>
+                                <span id="garments">500+ garments</span>
+                            </div>
+                            <div class="stat">
+                                <i class="fas fa-users"></i>
+                                <span id="clients">200+ clients</span>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" id="contact-tailor">Contact Tailor</button>
+                    </div>
+                </div>
+                
+                <div class="tailor-details">
+                    <div class="details-section">
+                        <h2>About</h2>
+                        <p id="tailor-about"></p>
+                    </div>
+
+                    <div class="details-section">
+                        <h2>Services</h2>
+                        <ul class="services-list" id="services-list"></ul>
+                    </div>
+
+                    <div class="details-section">
+                        <h2>Materials</h2>
+                        <div class="materials-grid" id="materials-grid"></div>
+                    </div>
+
+                    <div class="details-section">
+                        <h2>Gallery</h2>
+                        <div class="gallery-grid" id="gallery-grid"></div>
+                    </div>
+
+                    <div class="details-section">
+                        <h2>Reviews</h2>
+                        <div class="thank-you-message" id="thank-you-message">
+                            Thank you for your review! It has been added below.
+                        </div>
+
+                        <div class="review-form">
+                            <h3>Add Your Review</h3>
+                            <form id="review-form">
+                                <div class="form-group">
+                                    <label for="reviewer-name">Your Name</label>
+                                    <input type="text" id="reviewer-name" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="reviewer-email">Your Email (optional)</label>
+                                    <input type="email" id="reviewer-email">
+                                </div>
+                                <div class="form-group">
+                                    <label for="review-rating">Rating</label>
+                                    <select id="review-rating" required>
+                                        <option value="">Select rating</option>
+                                        <option value="5">5 Stars - Excellent</option>
+                                        <option value="4">4 Stars - Very Good</option>
+                                        <option value="3">3 Stars - Good</option>
+                                        <option value="2">2 Stars - Fair</option>
+                                        <option value="1">1 Star - Poor</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="review-text">Your Review</label>
+                                    <textarea id="review-text" required
+                                        placeholder="Share your experience with this tailor..."></textarea>
+                                </div>
+                                <button type="submit" class="submit-review">Submit Review</button>
+                            </form>
+                        </div>
+
+                        <div class="reviews-container" id="reviews-container"></div>
+                        <button class="btn btn-outline" id="load-more-reviews">Load More Reviews</button>
+                    </div>
+                </div>
+            </section>
+
+            <section class="tailor-cta">
+                <h2>Ready to work with this tailor?</h2>
+                <div class="cta-buttons">
+                    <a href="design.html" class="btn btn-primary">Start a Custom Design</a>
+                    <button class="btn btn-outline" id="book-consultation">Book a Consultation</button>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            </footer>
+    </div>
+
+    <div class="modal" id="consultation-modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>Book a Consultation</h2>
+            <form id="consultation-form">
+                <div class="form-group">
+                    <label for="consult-date">Preferred Date</label>
+                    <input type="date" id="consult-date" required>
+                </div>
+                <div class="form-group">
+                    <label for="consult-time">Preferred Time</label>
+                    <select id="consult-time" required>
+                        <option value="">Select a time</option>
+                        <option value="morning">Morning (9am-12pm)</option>
+                        <option value="afternoon">Afternoon (1pm-5pm)</option>
+                        <option value="evening">Evening (6pm-9pm)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="consult-notes">Special Requests</label>
+                    <textarea id="consult-notes" rows="4"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Book Consultation</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script src="js/tailor.js"></script>
+</body>
+
+</html>

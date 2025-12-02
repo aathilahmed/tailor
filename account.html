@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Account | Enarmous</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/account.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Main layout styles */
+        .account-section {
+            display: flex;
+            min-height: 100vh;
+            background: #f8f9fa;
+        }
+        
+        /* Sidebar styles */
+        .account-sidebar {
+            width: 280px;
+            background: linear-gradient(135deg, #2c3e50, #4a6fa5);
+            color: white;
+            padding: 2rem 1rem;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            position: relative;
+            z-index: 10;
+            transition: all 0.3s ease;
+        }
+        
+        .account-sidebar-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding: 0 0.5rem;
+        }
+        
+        .account-sidebar-header img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 1rem;
+            object-fit: cover;
+            border: 2px solid rgba(255,255,255,0.3);
+        }
+        
+        .account-sidebar-header h3 {
+            margin: 0;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        
+        .account-sidebar-header p {
+            margin: 0;
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+        
+        .sidebar-nav {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .sidebar-nav li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .sidebar-nav a {
+            display: flex;
+            align-items: center;
+            padding: 0.8rem 1rem;
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .sidebar-nav a:hover {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            transform: translateX(5px);
+        }
+        
+        .sidebar-nav a.active {
+            background: rgba(255,255,255,0.15);
+            color: white;
+            font-weight: 600;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .sidebar-nav a.active:before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 4px;
+            background: white;
+        }
+        
+        .sidebar-nav i {
+            margin-right: 1rem;
+            font-size: 1.1rem;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .sidebar-nav .badge {
+            margin-left: auto;
+            background: rgba(255,255,255,0.2);
+            padding: 0.2rem 0.5rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+        }
+        
+        .account-content {
+            flex: 1;
+            padding: 2rem 3rem;
+            background: #f8f9fa;
+        }
+        
+        /* Dashboard styles */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .dashboard-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.8rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0,0,0,0.05);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+        
+        .dashboard-card:after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #4a6fa5, #6a8fc7);
+        }
+        
+        /* Section styles */
+        .account-section-container {
+            background: white;
+            border-radius: 12px;
+            padding: 2.5rem;
+            margin-top: 2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .account-section-container:hover {
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+        
+        .account-section-container h2 {
+            color: #2c3e50;
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+            position: relative;
+            padding-bottom: 0.8rem;
+        }
+        
+        .account-section-container h2:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: linear-gradient(90deg, #4a6fa5, #6a8fc7);
+            border-radius: 3px;
+        }
+        
+        .account-section-container h2 i {
+            margin-right: 0.8rem;
+            color: #4a6fa5;
+        }
+        
+        /* Image upload styles */
+        .profile-image {
+            position: relative;
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin: 0 auto 1.5rem;
+            border: 4px solid white;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            transition: all 0.3s ease;
+        }
+        
+        .profile-image:hover {
+            transform: scale(1.05);
+            box-shadow: 0 12px 25px rgba(0,0,0,0.2);
+        }
+        
+        #profile-pic {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .file-upload {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.6);
+            color: white;
+            text-align: center;
+            padding: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .file-upload:hover {
+            background: rgba(0,0,0,0.8);
+        }
+        
+        .file-upload-input {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+        }
+        
+        /* Button styles */
+        .btn {
+            display: inline-block;
+            padding: 0.7rem 1.5rem;
+            background: linear-gradient(135deg, #4a6fa5, #6a8fc7);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .btn:hover {
+            background: linear-gradient(135deg, #3a5a80, #4a6fa5);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 10px rgba(0,0,0,0.15);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #4a6fa5;
+            color: #4a6fa5;
+            box-shadow: none;
+        }
+        
+        .btn-outline:hover {
+            background: rgba(74, 111, 165, 0.1);
+            color: #4a6fa5;
+        }
+        
+        /* Design Inspiration */
+        .inspiration-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .inspiration-item {
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .inspiration-item:hover {
+            transform: scale(1.05);
+        }
+        
+        .inspiration-item img {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        /* Quick Actions */
+        .quick-actions {
+            margin-bottom: 1.5rem;
+        }
+        
+        .action-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .action-item:hover {
+            border-color: #4a6fa5;
+            transform: translateY(-2px);
+        }
+        
+        .action-item i {
+            font-size: 1.5rem;
+            color: #4a6fa5;
+            margin-right: 1rem;
+            width: 40px;
+            text-align: center;
+        }
+        
+        .action-item div {
+            flex: 1;
+        }
+        
+        .action-item h4 {
+            margin: 0 0 0.3rem 0;
+            color: #2c3e50;
+        }
+        
+        .action-item p {
+            margin: 0;
+            font-size: 0.8rem;
+            color: #777;
+        }
+        
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 100;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(5px);
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .modal-content {
+            background: white;
+            margin: 5% auto;
+            padding: 2.5rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            width: 90%;
+            max-width: 600px;
+            position: relative;
+            animation: slideDown 0.4s ease;
+        }
+        
+        @keyframes slideDown {
+            from { 
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 1rem;
+            right: 1.5rem;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #888;
+            transition: all 0.3s ease;
+        }
+        
+        .close-modal:hover {
+            color: #333;
+            transform: rotate(90deg);
+        }
+        
+        /* Form styles */
+        .account-form {
+            max-width: 600px;
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group {
+            flex: 1;
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .form-group input:focus {
+            border-color: #4a6fa5;
+            box-shadow: 0 0 0 3px rgba(74, 111, 165, 0.1);
+            outline: none;
+        }
+        
+        .form-actions {
+            margin-top: 2rem;
+        }
+        
+        /* Success notification */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 1rem 1.5rem;
+            border-radius: 6px;
+            color: white;
+            font-weight: 600;
+            z-index: 1000;
+            animation: slideInRight 0.3s ease;
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+        }
+        
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        @keyframes slideOutRight {
+            from {
+                opacity: 1;
+                transform: translateX(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 992px) {
+            .account-section {
+                flex-direction: column;
+            }
+            
+            .account-sidebar {
+                width: 100%;
+                padding: 1rem;
+            }
+            
+            .sidebar-nav {
+                display: flex;
+                overflow-x: auto;
+                padding-bottom: 1rem;
+            }
+            
+            .sidebar-nav li {
+                margin-bottom: 0;
+                margin-right: 0.5rem;
+                flex-shrink: 0;
+            }
+            
+            .sidebar-nav a {
+                padding: 0.6rem 1rem;
+            }
+            
+            .account-content {
+                padding: 1.5rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .account-section-container {
+                padding: 1.5rem;
+            }
+            
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="gradient-bg">
+        <header>
+            <h1 class="logo">ENARMOUS</h1>
+            <nav>
+                <ul>
+                    <li><a href="index.php" class="nav-link">Home</a></li>
+                    <li><a href="design.html" class="nav-link">Design</a></li>
+                    <li><a href="tailor.html" class="nav-link">Tailors</a></li>
+                    <li><a href="account.html" class="nav-link active">Account</a></li>
+                    <li><a href="cart.html" class="nav-link cart-link"><i class="fas fa-shopping-cart"></i> <span class="cart-count">0</span></a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <main>
+            <section class="account-section">
+                <!-- Sidebar Navigation -->
+                <div class="account-sidebar">
+                    <div class="account-sidebar-header">
+                        <img src="images/zyan malik.jpg" alt="Profile">
+                        <div>
+                            <h3 id="sidebar-username">Aathil Ahmed</h3>
+                            <p id="sidebar-email">ahmedaathil276@example.com</p>
+                        </div>
+                    </div>
+                    
+                    <ul class="sidebar-nav">
+                        <li>
+                            <a href="#dashboard" class="active" id="dashboard-link">
+                                <i class="fas fa-tachometer-alt"></i>
+                                Dashboard
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#settings" id="settings-link">
+                                <i class="fas fa-cog"></i>
+                                Settings
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" id="sidebar-logout-btn">
+                                <i class="fas fa-sign-out-alt"></i>
+                                Logout
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="account-content">
+                    <!-- Dashboard Section -->
+                    <div id="dashboard" class="account-tab active">
+                        <div class="account-profile">
+                            <div class="profile-image">
+                                <img src="images/zyan malik.jpg" alt="Profile" id="profile-pic">
+                                <div class="file-upload">
+                                    <span>Change Photo</span>
+                                    <input type="file" id="file-upload-input" class="file-upload-input" accept="image/*">
+                                </div>
+                            </div>
+                            <h2 id="username">Aathil Ahmed</h2>
+                            <p id="user-email">ahmedaathil276@example.com</p>
+                        </div>
+                        
+                        <h2>Welcome Back, <span id="greeting-name">Aathil</span>!</h2>
+                        <p class="welcome-message">Your fashion journey continues. Get inspired and create your next masterpiece.</p>
+                        
+                        <div class="dashboard-grid">
+                            <div class="dashboard-card">
+                                <h3>Design Inspiration</h3>
+                                <div class="inspiration-grid">
+                                    <div class="inspiration-item">
+                                        <img src="images/summer (2).jpg" alt="Summer Collection">
+                                        <h4>Summer Collection</h4>
+                                        <button class="btn btn-outline">Get Inspired</button>
+                                    </div>
+                                    <div class="inspiration-item">
+                                        <img src="images/formal (2).jpg" alt="Formal Wear">
+                                        <h4>Formal Wear</h4>
+                                        <button class="btn btn-outline">Get Inspired</button>
+                                    </div>
+                                    <div class="inspiration-item">
+                                        <img src="images/causal2.jpg" alt="Casual Outfits">
+                                        <h4>Casual Outfits</h4>
+                                        <button class="btn btn-outline">Get Inspired</button>
+                                    </div>
+                                    <div class="inspiration-item">
+                                        <img src="images/street.jpg" alt="Street Style">
+                                        <h4>Street Style</h4>
+                                        <button class="btn btn-outline">Get Inspired</button>
+                                    </div>
+                                </div>
+                                <a href="design.html" class="btn">Browse More Ideas</a>
+                            </div>
+                            
+                            <div class="dashboard-card">
+                                <h3>Quick Actions</h3>
+                                <div class="quick-actions">
+                                    <div class="action-item">
+                                        <i class="fas fa-palette"></i>
+                                        <div>
+                                            <h4>Start New Design</h4>
+                                            <p>Create a custom outfit from scratch</p>
+                                        </div>
+                                        <a href="design.html" class="btn btn-outline">Start</a>
+                                    </div>
+                                    <div class="action-item">
+                                        <i class="fas fa-user-tie"></i>
+                                        <div>
+                                            <h4>Find a Tailor</h4>
+                                            <p>Connect with professional tailors</p>
+                                        </div>
+                                        <a href="tailor.html" class="btn btn-outline">Find</a>
+                                    </div>
+                                    <div class="action-item">
+                                        <i class="fas fa-history"></i>
+                                        <div>
+                                            <h4>Order History</h4>
+                                            <p>View your previous orders</p>
+                                        </div>
+                                        <a href="#" class="btn btn-outline">View</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Account Settings Section -->
+                    <div id="settings" class="account-section-container" style="display: none;">
+                        <h2><i class="fas fa-cog"></i> Account Settings</h2>
+                        <form class="account-form" id="account-settings-form">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="first-name">First Name</label>
+                                    <input type="text" id="first-name" value="Aathil" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="last-name">Last Name</label>
+                                    <input type="text" id="last-name" value="Ahmed" required>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="email">Email</label>
+                                <input type="email" id="email" value="ahmedaathil276@example.com" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="phone">Phone Number</label>
+                                <input type="tel" id="phone" value="+1 (555) 123-4567">
+                            </div>
+                            
+                            <div class="form-actions">
+                                <button type="submit" class="btn">Save Changes</button>
+                                <button type="button" class="btn btn-outline" id="reset-form">Reset</button>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <!-- Logout Section -->
+                    <div class="account-section-container" id="logout-section" style="display: none;">
+                        <h2><i class="fas fa-sign-out-alt"></i> Account Actions</h2>
+                        <button class="btn btn-outline" id="logout-btn">Log Out</button>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <h2>ENARMOUS</h2>
+                    <p>Custom Fashion Design</p>
+                </div>
+                <div class="footer-links">
+                    <div class="link-group">
+                        <h3>Shop</h3>
+                        <a href="design.html">Custom Design</a>
+                        <a href="#">Ready-to-Wear</a>
+                        <a href="#">Collections</a>
+                    </div>
+                    <div class="link-group">
+                        <h3>Support</h3>
+                        <a href="#">Help Center</a>
+                        <a href="#">Size Guide</a>
+                        <a href="#">Contact Us</a>
+                    </div>
+                    <div class="link-group">
+                        <h3>Company</h3>
+                        <a href="#">About Us</a>
+                        <a href="#">Careers</a>
+                        <a href="#">Blog</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Enarmous. All rights reserved.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-pinterest"></i></a>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Logout Confirmation Modal -->
+    <div class="modal" id="logout-modal">
+        <div class="modal-content">
+            <h2>Ready to Leave?</h2>
+            <p>Are you sure you want to log out of your account?</p>
+            <div class="modal-actions">
+                <button class="btn btn-outline" id="cancel-logout">Cancel</button>
+                <button class="btn" id="confirm-logout">Log Out</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Store original form values for reset functionality
+            const originalValues = {
+                firstName: 'Aathil',
+                lastName: 'Ahmed',
+                email: 'ahmedaathil276@example.com',
+                phone: '+1 (555) 123-4567'
+            };
+            
+            // Profile picture upload
+            const fileUploadInput = document.getElementById('file-upload-input');
+            if (fileUploadInput) {
+                fileUploadInput.addEventListener('change', function(e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        if (file.size > 2 * 1024 * 1024) { // 2MB limit
+                            alert('Please select an image smaller than 2MB');
+                            return;
+                        }
+                        
+                        const reader = new FileReader();
+                        reader.onload = function(event) {
+                            document.getElementById('profile-pic').src = event.target.result;
+                            document.querySelector('.account-sidebar-header img').src = event.target.result;
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+            }
+            
+            // Logout functionality
+            const logoutBtns = [document.getElementById('logout-btn'), document.getElementById('sidebar-logout-btn')];
+            const logoutModal = document.getElementById('logout-modal');
+            const cancelLogout = document.getElementById('cancel-logout');
+            const confirmLogout = document.getElementById('confirm-logout');
+            
+            logoutBtns.forEach(btn => {
+                if (btn) {
+                    btn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        logoutModal.style.display = 'block';
+                    });
+                }
+            });
+            
+            if (cancelLogout && confirmLogout) {
+                cancelLogout.addEventListener('click', function() {
+                    logoutModal.style.display = 'none';
+                });
+                
+                confirmLogout.addEventListener('click', function() {
+                    // In a real app, this would log the user out and redirect
+                    alert('You have been logged out successfully!');
+                    window.location.href = 'index.html';
+                });
+            }
+            
+            // Close modals when clicking outside
+            window.addEventListener('click', function(e) {
+                if (e.target.classList.contains('modal')) {
+                    e.target.style.display = 'none';
+                }
+            });
+            
+            // Personalized greeting
+            const greetingName = document.getElementById('greeting-name');
+            const hour = new Date().getHours();
+            let greeting;
+            
+            if (hour < 12) {
+                greeting = 'Good morning';
+            } else if (hour < 18) {
+                greeting = 'Good afternoon';
+            } else {
+                greeting = 'Good evening';
+            }
+            
+            if (greetingName) {
+                greetingName.textContent = greeting + ', ' + greetingName.textContent;
+            }
+            
+            // Form submission with proper saving functionality
+            const accountForm = document.getElementById('account-settings-form');
+            const resetFormBtn = document.getElementById('reset-form');
+            
+            if (accountForm) {
+                accountForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    // Get form values
+                    const firstName = document.getElementById('first-name').value;
+                    const lastName = document.getElementById('last-name').value;
+                    const email = document.getElementById('email').value;
+                    const phone = document.getElementById('phone').value;
+                    
+                    // Update displayed information
+                    document.getElementById('username').textContent = `${firstName} ${lastName}`;
+                    document.getElementById('greeting-name').textContent = firstName;
+                    document.getElementById('sidebar-username').textContent = `${firstName} ${lastName}`;
+                    document.getElementById('user-email').textContent = email;
+                    document.getElementById('sidebar-email').textContent = email;
+                    
+                    // Update original values for reset functionality
+                    originalValues.firstName = firstName;
+                    originalValues.lastName = lastName;
+                    originalValues.email = email;
+                    originalValues.phone = phone;
+                    
+                    // Show success notification
+                    showNotification('Account settings saved successfully!', 'success');
+                });
+            }
+            
+            // Reset form functionality
+            if (resetFormBtn) {
+                resetFormBtn.addEventListener('click', function() {
+                    document.getElementById('first-name').value = originalValues.firstName;
+                    document.getElementById('last-name').value = originalValues.lastName;
+                    document.getElementById('email').value = originalValues.email;
+                    document.getElementById('phone').value = originalValues.phone;
+                    
+                    showNotification('Form reset to last saved values', 'info');
+                });
+            }
+            
+            // Sidebar navigation
+            const navLinks = document.querySelectorAll('.sidebar-nav a');
+            const sections = {
+                'dashboard-link': 'dashboard',
+                'settings-link': 'settings',
+                'sidebar-logout-btn': 'logout-section'
+            };
+            
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Remove active class from all links
+                    navLinks.forEach(navLink => {
+                        navLink.classList.remove('active');
+                    });
+                    
+                    // Add active class to clicked link
+                    this.classList.add('active');
+                    
+                    // Hide all sections
+                    document.querySelectorAll('.account-section-container, .account-tab').forEach(section => {
+                        section.style.display = 'none';
+                    });
+                    
+                    // Show the selected section
+                    const sectionId = sections[this.id];
+                    if (sectionId) {
+                        document.getElementById(sectionId).style.display = 'block';
+                    }
+                });
+            });
+            
+            // Show notification function
+            function showNotification(message, type) {
+                // Create notification element
+                const notification = document.createElement('div');
+                notification.className = `notification ${type}`;
+                notification.textContent = message;
+                
+                // Style the notification
+                notification.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    padding: 1rem 1.5rem;
+                    border-radius: 6px;
+                    color: white;
+                    font-weight: 600;
+                    z-index: 1000;
+                    animation: slideInRight 0.3s ease;
+                `;
+                
+                if (type === 'success') {
+                    notification.style.background = 'linear-gradient(135deg, #4CAF50, #45a049)';
+                } else if (type === 'info') {
+                    notification.style.background = 'linear-gradient(135deg, #2196F3, #1976D2)';
+                } else {
+                    notification.style.background = 'linear-gradient(135deg, #f44336, #d32f2f)';
+                }
+                
+                // Add to page
+                document.body.appendChild(notification);
+                
+                // Remove after 3 seconds
+                setTimeout(() => {
+                    notification.style.animation = 'slideOutRight 0.3s ease';
+                    setTimeout(() => {
+                        if (document.body.contains(notification)) {
+                            document.body.removeChild(notification);
+                        }
+                    }, 300);
+                }, 3000);
+            }
+            
+            // Quick action buttons functionality
+            const quickActionButtons = document.querySelectorAll('.quick-actions .btn');
+            quickActionButtons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    // In a real app, this would navigate to the appropriate page
+                    // For now, just show a notification
+                    const actionText = this.closest('.action-item').querySelector('h4').textContent;
+                    showNotification(`Redirecting to ${actionText}...`, 'info');
+                });
+            });
+            
+            // Design inspiration buttons functionality
+            const inspirationButtons = document.querySelectorAll('.inspiration-item .btn');
+            inspirationButtons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    const inspirationText = this.closest('.inspiration-item').querySelector('h4').textContent;
+                    showNotification(`Exploring ${inspirationText} inspirations...`, 'info');
+                    
+                    // In a real app, this would filter or show specific inspirations
+                    setTimeout(() => {
+                        window.location.href = 'design.html';
+                    }, 1000);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tailor Dashboard | Enarmous</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2a2a2a;
+            --secondary: #f5f5f5;
+            --accent: #4CAF50;
+            --text: #333;
+            --light-gray: #e0e0e0;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            display: flex;
+            min-height: 100vh;
+            background-color: #f9f9f9;
+            color: var(--text);
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background: var(--primary);
+            color: white;
+            height: 100vh;
+            position: fixed;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+        }
+        
+        .sidebar-header {
+            padding: 25px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .sidebar-header h2 {
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .sidebar-header h2 i {
+            margin-right: 10px;
+            color: var(--accent);
+        }
+        
+        .nav-item {
+            padding: 15px 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            border-left: 3px solid transparent;
+        }
+        
+        .nav-item:hover, .nav-item.active {
+            background: rgba(255,255,255,0.05);
+            border-left: 3px solid var(--accent);
+        }
+        
+        .nav-item i {
+            margin-right: 12px;
+            width: 20px;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+        
+        /* Main Content */
+        .main-content {
+            margin-left: 250px;
+            flex: 1;
+            padding: 30px;
+            background-color: white;
+            min-height: 100vh;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        
+        /* Profile Section */
+        .profile-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .profile-pic {
+            position: relative;
+            margin-right: 30px;
+        }
+        
+        .profile-pic img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid white;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+        }
+        
+        .change-pic-btn {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            transition: all 0.3s;
+        }
+        
+        .change-pic-btn:hover {
+            background: #3e8e41;
+            transform: scale(1.1);
+        }
+        
+        /* Tables */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        .data-table th, .data-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        
+        .data-table th {
+            background-color: var(--secondary);
+            font-weight: 600;
+        }
+        
+        .data-table tr:hover {
+            background-color: rgba(0,0,0,0.02);
+        }
+        
+        .status {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .status.completed {
+            background-color: #e6f7e6;
+            color: var(--accent);
+        }
+        
+        .status.pending {
+            background-color: #fff8e6;
+            color: #ff9800;
+        }
+        
+        /* Forms */
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--light-gray);
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background-color: var(--accent);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #3e8e41;
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+        }
+        
+        .btn-outline:hover {
+            background-color: rgba(76, 175, 80, 0.1);
+        }
+        
+        /* Hidden file input */
+        #file-input {
+            display: none;
+        }
+        
+        /* Sections (hidden by default) */
+        .dashboard-section {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .dashboard-section.active {
+            display: block;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .profile-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .profile-pic {
+                margin-right: 0;
+                margin-bottom: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar Navigation -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h2><i class="fas fa-tshirt"></i> Enarmous Tailor</h2>
+        </div>
+        <div class="sidebar-nav">
+            <div class="nav-item active" data-section="profile">
+                <i class="fas fa-user"></i> Profile
+            </div>
+            <div class="nav-item" data-section="orders">
+                <i class="fas fa-clipboard-list"></i> Orders
+            </div>
+            <div class="nav-item" data-section="designs">
+                <i class="fas fa-pencil-ruler"></i> Designs
+            </div>
+            <div class="nav-item" data-section="measurements">
+                <i class="fas fa-ruler-combined"></i> Measurements
+            </div>
+            <div class="nav-item" data-section="address">
+                <i class="fas fa-map-marker-alt"></i> Address
+            </div>
+            <div class="nav-item" data-section="logout">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Profile Section -->
+        <div id="profile" class="dashboard-section active">
+            <div class="section-header">
+                <h1>Your Profile</h1>
+                <button class="btn btn-outline">Edit Profile</button>
+            </div>
+            
+            <div class="profile-header">
+                <div class="profile-pic">
+                    <img id="profile-image" src="https://images.unsplash.com/photo-1601412436009-d964bd02edbc?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" alt="Profile Picture">
+                    <button class="change-pic-btn" id="change-pic-btn" title="Change Photo">
+                        <i class="fas fa-camera"></i>
+                    </button>
+                    <input type="file" id="file-input" accept="image/*">
+                </div>
+                <div>
+                    <h1>Abdul Kadher</h1>
+                    <p><i class="fas fa-star" style="color: gold;"></i> 4.8 (127 reviews)</p>
+                    <p><i class="fas fa-map-marker-alt"></i> Chennai, India</p>
+                    <p><i class="fas fa-suitcase"></i> 5+ years experience</p>
+                </div>
+            </div>
+            
+            <div class="profile-details">
+                <h3>About</h3>
+                <p>Master tailor specializing in bespoke suits and traditional Indian wear. Committed to precision craftsmanship and personalized service for every client.</p>
+                
+                <h3>Services</h3>
+                <ul style="margin-left: 20px; margin-top: 10px;">
+                    <li>Bespoke Suits</li>
+                    <li>Sherwanis & Traditional Wear</li>
+                    <li>Alterations</li>
+                    <li>Bridal Wear</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Orders Section -->
+        <div id="orders" class="dashboard-section">
+            <div class="section-header">
+                <h1>Your Orders</h1>
+                <button class="btn btn-primary">New Order</button>
+            </div>
+            
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Client</th>
+                        <th>Items</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>#EN2023-45</td>
+                        <td>Rajesh Kumar</td>
+                        <td>Bespoke Suit (2-piece)</td>
+                        <td>15 Oct 2023</td>
+                        <td><span class="status completed">Completed</span></td>
+                        <td><button class="btn btn-outline">View</button></td>
+                    </tr>
+                    <tr>
+                        <td>#EN2023-46</td>
+                        <td>Priya Shah</td>
+                        <td>Designer Saree Blouse</td>
+                        <td>18 Oct 2023</td>
+                        <td><span class="status pending">In Progress</span></td>
+                        <td><button class="btn btn-outline">View</button></td>
+                    </tr>
+                    <tr>
+                        <td>#EN2023-47</td>
+                        <td>Vikram Patel</td>
+                        <td>Sherwani (Custom)</td>
+                        <td>20 Oct 2023</td>
+                        <td><span class="status pending">Measurements Pending</span></td>
+                        <td><button class="btn btn-outline">View</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Designs Section -->
+        <div id="designs" class="dashboard-section">
+            <div class="section-header">
+                <h1>Your Designs</h1>
+                <button class="btn btn-primary">Upload Design</button>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px;">
+                <div style="border: 1px solid var(--light-gray); border-radius: 8px; overflow: hidden;">
+                    <img src="https://images.unsplash.com/photo-1598033129183-c4f50c736f10?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" alt="Design 1" style="width: 100%; height: 200px; object-fit: cover;">
+                    <div style="padding: 15px;">
+                        <h4>Classic Navy Suit</h4>
+                        <p>Created: 12 Oct 2023</p>
+                        <button class="btn btn-outline" style="width: 100%; margin-top: 10px;">Edit Design</button>
+                    </div>
+                </div>
+                
+                <div style="border: 1px solid var(--light-gray); border-radius: 8px; overflow: hidden;">
+                    <img src="https://images.unsplash.com/photo-1539533018447-63fcce2678e4?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" alt="Design 2" style="width: 100%; height: 200px; object-fit: cover;">
+                    <div style="padding: 15px;">
+                        <h4>Wedding Sherwani</h4>
+                        <p>Created: 5 Oct 2023</p>
+                        <button class="btn btn-outline" style="width: 100%; margin-top: 10px;">Edit Design</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Measurements Section -->
+        <div id="measurements" class="dashboard-section">
+            <div class="section-header">
+                <h1>Client Measurements</h1>
+                <button class="btn btn-primary">Add New</button>
+            </div>
+            
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Client</th>
+                        <th>Chest</th>
+                        <th>Waist</th>
+                        <th>Hips</th>
+                        <th>Arm Length</th>
+                        <th>Last Updated</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Rajesh Kumar</td>
+                        <td>42"</td>
+                        <td>38"</td>
+                        <td>40"</td>
+                        <td>25"</td>
+                        <td>15 Oct 2023</td>
+                    </tr>
+                    <tr>
+                        <td>Priya Shah</td>
+                        <td>34"</td>
+                        <td>30"</td>
+                        <td>36"</td>
+                        <td>22"</td>
+                        <td>10 Oct 2023</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div style="margin-top: 30px; background: var(--secondary); padding: 20px; border-radius: 8px;">
+                <h3>Measurement Guide</h3>
+                <img src="https://images.unsplash.com/photo-1598701680851-0e9a7ce5c0d4?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" alt="Measurement Guide" style="width: 100%; max-height: 300px; object-fit: contain; margin-top: 15px;">
+            </div>
+        </div>
+
+        <!-- Address Section -->
+        <div id="address" class="dashboard-section">
+            <div class="section-header">
+                <h1>Your Address</h1>
+                <button class="btn btn-primary">Edit Address</button>
+            </div>
+            
+            <div style="background: var(--secondary); padding: 25px; border-radius: 8px; max-width: 600px;">
+                <h3>Workshop Address</h3>
+                <p style="margin-top: 15px; line-height: 1.6;">
+                    <i class="fas fa-map-marker-alt" style="color: var(--accent); margin-right: 10px;"></i>
+                    12 Tailor Street, T. Nagar<br>
+                    Chennai, Tamil Nadu 600017<br>
+                    India
+                </p>
+                
+                <div style="margin-top: 30px;">
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3886.008888888889!2d80.2178053153446!3d13.08290059086024!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a526f6c8af6e8b9%3A0x3b4a4f9a0d8a9b8c!2sT.%20Nagar%2C%20Chennai%2C%20Tamil%20Nadu!5e0!3m2!1sen!2sin!4v1620000000000!5m2!1sen!2sin" width="100%" height="300" style="border:0; border-radius: 8px;" allowfullscreen="" loading="lazy"></iframe>
+                </div>
+            </div>
+        </div>
+
+        <!-- Logout Section -->
+        <div id="logout" class="dashboard-section">
+            <div class="section-header">
+                <h1>Logout</h1>
+            </div>
+            
+            <div style="text-align: center; max-width: 500px; margin: 50px auto;">
+                <i class="fas fa-sign-out-alt" style="font-size: 3rem; color: var(--accent); margin-bottom: 20px;"></i>
+                <h2>Ready to leave?</h2>
+                <p style="margin: 20px 0 30px;">You can always log back in to access your tailor dashboard.</p>
+                <button id="confirm-logout" class="btn btn-primary" style="padding: 12px 30px;">Logout Now</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Switch between dashboard sections
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', function() {
+                // Remove active class from all
+                document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+                document.querySelectorAll('.dashboard-section').forEach(section => section.classList.remove('active'));
+                
+                // Add active class to clicked item
+                this.classList.add('active');
+                const sectionId = this.getAttribute('data-section');
+                document.getElementById(sectionId).classList.add('active');
+            });
+        });
+
+        // Change profile picture
+        const changePicBtn = document.getElementById('change-pic-btn');
+        const fileInput = document.getElementById('file-input');
+        const profileImage = document.getElementById('profile-image');
+
+        changePicBtn.addEventListener('click', () => fileInput.click());
+        
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files && e.target.files[0]) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    profileImage.src = event.target.result;
+                    alert('Profile picture updated successfully!');
+                };
+                reader.readAsDataURL(e.target.files[0]);
+            }
+        });
+
+        // Logout confirmation
+        document.getElementById('confirm-logout').addEventListener('click', () => {
+            if(confirm('Are you sure you want to logout?')) {
+                alert('Logged out successfully! Redirecting to login...');
+                // window.location.href = 'login.html';
+            }
+        });
+
+        // Simulate loading data (in a real app, you'd fetch from an API)
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Dashboard loaded');
+        });
+    </script>
+</body>
+</html>

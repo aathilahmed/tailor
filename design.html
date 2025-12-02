@@ -1,0 +1,1271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Design Your Outfit | Enarmous</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/design.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Additional styles for enhanced cart functionality */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #4CAF50;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 5px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            min-width: 300px;
+            animation: slideIn 0.3s ease;
+        }
+        
+        .notification.error {
+            background: #f44336;
+        }
+        
+        .close-notification {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        .cart-bounce {
+            animation: bounce 1s ease;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 60%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            80% { transform: translateY(-5px); }
+        }
+        
+        .pulse-animation {
+            animation: pulse 0.5s ease;
+        }
+        
+        .color-change {
+            animation: colorPulse 0.5s ease;
+        }
+        
+        .button-click {
+            animation: click 0.3s ease;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes colorPulse {
+            0% { opacity: 0.8; }
+            50% { opacity: 1; }
+            100% { opacity: 1; }
+        }
+        
+        @keyframes click {
+            0% { transform: scale(1); }
+            50% { transform: scale(0.95); }
+            100% { transform: scale(1); }
+        }
+        
+        /* Enhanced preview styling */
+        .garment-preview {
+            position: relative;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            background: #f8f9fa;
+            height: 500px;
+        }
+        
+        .garment-wrapper {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.3s ease;
+        }
+        
+        .base-image {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            /* Removed filter to show actual colors */
+        }
+        
+        .fabric-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            mix-blend-mode: multiply;
+            opacity: 0.9;
+        }
+        
+        /* Removed color-overlay class as requested */
+        
+        .pocket-overlay, .collar-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            mix-blend-mode: multiply;
+        }
+        
+        .animate {
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        /* Enhanced customization options */
+        .customization-options {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        
+        .option-group {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .option-group:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+        
+        .fabric-options, .fit-options, .pocket-options, .collar-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .fabric-option, .fit-option, .pocket-option, .collar-option {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+        }
+        
+        .fabric-option:hover, .fit-option:hover, .pocket-option:hover, .collar-option:hover {
+            border-color: #2196f3;
+            transform: translateY(-2px);
+        }
+        
+        .fabric-option.active, .fit-option.active, .pocket-option.active, .collar-option.active {
+            border-color: #2196f3;
+            background: #e3f2fd;
+        }
+        
+        .fabric-sample {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            background-size: cover;
+            background-position: center;
+            margin-bottom: 8px;
+            border: 1px solid #ddd;
+        }
+        
+        .fit-icon, .pocket-icon, .collar-icon {
+            width: 50px;
+            height: 50px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            margin-bottom: 8px;
+        }
+        
+        .color-options {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .color-picker {
+            width: 60px;
+            height: 60px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        
+        .preset-colors {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .preset-color {
+            width: 40px;
+            height: 40px;
+            border-radius: 6px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.2s ease;
+        }
+        
+        .preset-color:hover {
+            transform: scale(1.1);
+        }
+        
+        .size-inputs {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 15px;
+        }
+        
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .input-group label {
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .input-group input[type="range"] {
+            width: 100%;
+        }
+        
+        .value-display {
+            font-weight: 600;
+            color: #2196f3;
+            text-align: center;
+            padding: 5px;
+            background: #f5f5f5;
+            border-radius: 4px;
+        }
+        
+        /* Enhanced buttons */
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .share-design {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .share-design:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+        }
+        
+        .add-to-cart {
+            background: #2196f3;
+            color: white;
+        }
+        
+        .add-to-cart:hover {
+            background: #1976d2;
+            transform: translateY(-2px);
+        }
+        
+        .save-share {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        /* Zoom controls */
+        .zoom-controls {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            display: flex;
+            gap: 8px;
+            z-index: 10;
+        }
+        
+        .zoom-btn {
+            width: 40px;
+            height: 40px;
+            border: none;
+            border-radius: 50%;
+            background: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+        
+        .zoom-btn:hover {
+            background: #f5f5f5;
+            transform: scale(1.1);
+        }
+        
+        /* Modification points */
+        .modification-point {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: #ff5722;
+            border: 2px solid white;
+            border-radius: 50%;
+            cursor: move;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            z-index: 5;
+        }
+        
+        .modification-point:hover {
+            transform: scale(1.2);
+        }
+
+        /* Design selector */
+        .design-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            justify-content: center;
+        }
+        
+        .design-option {
+            padding: 12px 24px;
+            border: 2px solid #e0e0e0;
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .design-option.active {
+            border-color: #2196f3;
+            background: #2196f3;
+            color: white;
+        }
+        
+        /* MODIFIED: Full width design container */
+        .design-container {
+            width: 100%;
+            max-width: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .preview-container {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .design-section {
+            display: none;
+        }
+        
+        /* MODIFIED: Full width design section */
+        .design-section.active {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            width: 100%;
+            max-width: 100%;
+            margin: 0;
+            padding: 0 20px;
+            box-sizing: border-box;
+        }
+        
+        /* MODIFIED: Full width main container */
+        main {
+            width: 100%;
+            max-width: 100%;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        /* MODIFIED: Full width header */
+        header {
+            width: 100%;
+            max-width: 100%;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        
+        /* MODIFIED: Full width footer */
+        footer {
+            width: 100%;
+            max-width: 100%;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        
+        /* MODIFIED: Full width gradient background */
+        .gradient-bg {
+            width: 100%;
+            max-width: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 1200px) {
+            .design-section.active {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .garment-preview {
+                height: 400px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .design-section.active {
+                padding: 0 15px;
+                gap: 15px;
+            }
+            
+            .garment-preview {
+                height: 350px;
+            }
+            
+            .fabric-options, .fit-options, .pocket-options, .collar-options {
+                grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+                gap: 10px;
+            }
+            
+            .size-inputs {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .save-share {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .design-section.active {
+                padding: 0 10px;
+                gap: 10px;
+            }
+            
+            .garment-preview {
+                height: 300px;
+            }
+            
+            .customization-options {
+                padding: 15px;
+            }
+            
+            .fabric-options, .fit-options, .pocket-options, .collar-options {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="gradient-bg">
+        <header>
+            <h1 class="logo">ENARMOUS</h1>
+            <nav>
+                <ul>
+                    <li><a href="index.php" class="nav-link">Home</a></li>
+                    <li><a href="design.html" class="nav-link active">Design</a></li>
+                    <li><a href="tailor.html" class="nav-link">Tailors</a></li>
+                    <li><a href="account.html" class="nav-link">Account</a></li>
+                    <li><a href="cart.html" class="nav-link cart-link"><i class="fas fa-shopping-cart"></i> <span class="cart-count">0</span></a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <main>
+            <div class="design-selector">
+                <button class="design-option active" data-design="pants">Design Pants</button>
+                <button class="design-option" data-design="shirt">Design Shirt</button>
+            </div>
+
+            <div class="design-container">
+                <!-- Pants Design Section -->
+                <section class="design-section active" id="pants-design">
+                    <div class="preview-container">
+                        <div class="garment-preview" id="pants-preview">
+                            <div class="zoom-controls">
+                                <button class="zoom-btn zoom-in"><i class="fas fa-search-plus"></i></button>
+                                <button class="zoom-btn zoom-out"><i class="fas fa-search-minus"></i></button>
+                                <button class="zoom-btn reset-zoom"><i class="fas fa-expand"></i></button>
+                            </div>
+                            <div class="garment-wrapper">
+                                <!-- Modified: Using fabric image directly as base image -->
+                                <img src="images/cotton_pant_fab.jpg" alt="Pants Base" class="base-image" id="pants-base">
+                                <div class="pocket-overlay" id="pants-pocket"></div>
+                                <div class="modification-point" style="top: 30%; left: 50%;" data-point="waist"></div>
+                                <div class="modification-point" style="top: 50%; left: 50%;" data-point="hip"></div>
+                                <div class="modification-point" style="top: 70%; left: 30%;" data-point="inseam"></div>
+                            </div>
+                        </div>
+                        <div class="save-share">
+                            <button class="btn share-design" id="share-pants-design"><i class="fas fa-share-alt"></i> Share with Tailor</button>
+                            <button class="btn add-to-cart" id="add-pants-to-cart"><i class="fas fa-shopping-cart"></i> Add to Cart</button>
+                        </div>
+                    </div>
+
+                    <div class="customization-options">
+                        <h2>Customize Your Pants</h2>
+                        
+                        <!-- Size Measurements Section -->
+                        <div class="option-group">
+                            <h3>Size Measurements</h3>
+                            <div class="size-inputs">
+                                <div class="input-group">
+                                    <label for="waist">Waist (inches)</label>
+                                    <input type="range" id="waist" min="24" max="48" value="32" step="0.5">
+                                    <span class="value-display" id="waist-value">32</span>
+                                </div>
+                                <div class="input-group">
+                                    <label for="hip">Hip (inches)</label>
+                                    <input type="range" id="hip" min="30" max="60" value="38" step="0.5">
+                                    <span class="value-display" id="hip-value">38</span>
+                                </div>
+                                <div class="input-group">
+                                    <label for="inseam">Inseam (inches)</label>
+                                    <input type="range" id="inseam" min="24" max="36" value="30" step="0.5">
+                                    <span class="value-display" id="inseam-value">30</span>
+                                </div>
+                                <div class="input-group">
+                                    <label for="length">Length (inches)</label>
+                                    <input type="range" id="length" min="36" max="48" value="40" step="0.5">
+                                    <span class="value-display" id="length-value">40</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Fit Style Section -->
+                        <div class="option-group">
+                            <h3>Fit Style</h3>
+                            <div class="fit-options">
+                                <button class="fit-option active" data-fit="slim">
+                                    <div class="fit-icon slim"></div>
+                                    <span>Slim</span>
+                                </button>
+                                <button class="fit-option" data-fit="regular">
+                                    <div class="fit-icon regular"></div>
+                                    <span>Regular</span>
+                                </button>
+                                <button class="fit-option" data-fit="relaxed">
+                                    <div class="fit-icon relaxed"></div>
+                                    <span>Relaxed</span>
+                                </button>
+                                <button class="fit-option" data-fit="baggy">
+                                    <div class="fit-icon baggy"></div>
+                                    <span>Baggy</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Fabric Section -->
+                        <div class="option-group">
+                            <h3>Fabric</h3>
+                            <div class="fabric-options">
+                                <div class="fabric-option" data-fabric="denim" data-img="images/Denim Jeans shirt.jpg">
+                                    <div class="fabric-sample" style="background-image: url('images/Denim Jeans shirt.jpg')"></div>
+                                    <span>Denim</span>
+                                </div>
+                                <div class="fabric-option active" data-fabric="cotton" data-img="images/cotton_pant_fab.jpg">
+                                    <div class="fabric-sample" style="background-image: url('images/cotton_pant_fab.jpg')"></div>
+                                    <span>Cotton</span>
+                                </div>
+                                <div class="fabric-option" data-fabric="linen" data-img="images/leninpant.jpg">
+                                    <div class="fabric-sample" style="background-image: url('images/leninpant.jpg')"></div>
+                                    <span>Linen</span>
+                                </div>
+                                <div class="fabric-option" data-fabric="wool" data-img="images/wool pant fabric.jpg">
+                                    <div class="fabric-sample" style="background-image: url('images/wool pant fabric.jpg')"></div>
+                                    <span>Wool</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Color Section -->
+                        <div class="option-group">
+                            <h3>Color</h3>
+                            <div class="color-options">
+                                <input type="color" id="pants-color" value="#2e7d32" class="color-picker">
+                                <div class="preset-colors">
+                                    <div class="preset-color" style="background-color: #000000;" data-color="#000000"></div>
+                                    <div class="preset-color" style="background-color: #2e7d32;" data-color="#2e7d32"></div>
+                                    <div class="preset-color" style="background-color: #1565c0;" data-color="#1565c0"></div>
+                                    <div class="preset-color" style="background-color: #6a1b9a;" data-color="#6a1b9a"></div>
+                                    <div class="preset-color" style="background-color: #e65100;" data-color="#e65100"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Pockets Section -->
+                        <div class="option-group">
+                            <h3>Pockets</h3>
+                            <div class="pocket-options">
+                                <div class="pocket-option active" data-pocket="standard">
+                                    <div class="pocket-icon standard"></div>
+                                    <span>Standard</span>
+                                </div>
+                                <div class="pocket-option" data-pocket="cargo">
+                                    <div class="pocket-icon cargo"></div>
+                                    <span>Cargo</span>
+                                </div>
+                                <div class="pocket-option" data-pocket="hidden">
+                                    <div class="pocket-icon hidden"></div>
+                                    <span>Hidden</span>
+                                </div>
+                                <div class="pocket-option" data-pocket="none">
+                                    <div class="pocket-icon none"></div>
+                                    <span>No Pockets</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Shirt Design Section -->
+                <section class="design-section" id="shirt-design">
+                    <div class="preview-container">
+                        <div class="garment-preview" id="shirt-preview">
+                            <div class="zoom-controls">
+                                <button class="zoom-btn zoom-in"><i class="fas fa-search-plus"></i></button>
+                                <button class="zoom-btn zoom-out"><i class="fas fa-search-minus"></i></button>
+                                <button class="zoom-btn reset-zoom"><i class="fas fa-expand"></i></button>
+                            </div>
+                            <div class="garment-wrapper">
+                                <!-- Modified: Using fabric image directly as base image -->
+                                <img src="images/cotton fabric shirt.jpg" alt="Shirt Base" class="base-image" id="shirt-base">
+                                <div class="pocket-overlay" id="shirt-pocket"></div>
+                                <div class="collar-overlay" id="shirt-collar"></div>
+                                <div class="modification-point" style="top: 20%; left: 50%;" data-point="neck"></div>
+                                <div class="modification-point" style="top: 40%; left: 50%;" data-point="chest"></div>
+                                <div class="modification-point" style="top: 70%; left: 30%;" data-point="sleeve"></div>
+                            </div>
+                        </div>
+                        <div class="save-share">
+                            <button class="btn share-design" id="share-shirt-design"><i class="fas fa-share-alt"></i> Share with Tailor</button>
+                            <button class="btn add-to-cart" id="add-shirt-to-cart"><i class="fas fa-shopping-cart"></i> Add to Cart</button>
+                        </div>
+                    </div>
+
+                    <div class="customization-options">
+                        <h2>Customize Your Shirt</h2>
+                        
+                        <!-- Size Measurements Section -->
+                        <div class="option-group">
+                            <h3>Size Measurements</h3>
+                            <div class="size-inputs">
+                                <div class="input-group">
+                                    <label for="neck">Neck (inches)</label>
+                                    <input type="range" id="neck" min="12" max="20" value="15" step="0.5">
+                                    <span class="value-display" id="neck-value">15</span>
+                                </div>
+                                <div class="input-group">
+                                    <label for="chest">Chest (inches)</label>
+                                    <input type="range" id="chest" min="30" max="60" value="40" step="0.5">
+                                    <span class="value-display" id="chest-value">40</span>
+                                </div>
+                                <div class="input-group">
+                                    <label for="sleeve">Sleeve Length</label>
+                                    <select id="sleeve">
+                                        <option value="short">Short Sleeve</option>
+                                        <option value="long" selected>Long Sleeve</option>
+                                        <option value="3quarter">3/4 Sleeve</option>
+                                    </select>
+                                </div>
+                                <div class="input-group">
+                                    <label for="length">Shirt Length (inches)</label>
+                                    <input type="range" id="shirt-length" min="24" max="36" value="28" step="0.5">
+                                    <span class="value-display" id="shirt-length-value">28</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Fit Style Section -->
+                        <div class="option-group">
+                            <h3>Fit Style</h3>
+                            <div class="fit-options">
+                                <button class="fit-option active" data-fit="slim">
+                                    <div class="fit-icon slim"></div>
+                                    <span>Slim</span>
+                                </button>
+                                <button class="fit-option" data-fit="regular">
+                                    <div class="fit-icon regular"></div>
+                                    <span>Regular</span>
+                                </button>
+                                <button class="fit-option" data-fit="relaxed">
+                                    <div class="fit-icon relaxed"></div>
+                                    <span>Relaxed</span>
+                                </button>
+                                <button class="fit-option" data-fit="oversized">
+                                    <div class="fit-icon oversized"></div>
+                                    <span>Oversized</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Fabric Section -->
+                        <div class="option-group">
+                            <h3>Fabric</h3>
+                            <div class="fabric-options">
+                                <div class="fabric-option" data-fabric="denim" data-img="images/jean_shirt_fab.jpg">
+                                    <div class="fabric-sample" style="background-image: url('images/jean_shirt_fab.jpg')"></div>
+                                    <span>Denim</span>
+                                </div>
+                                <div class="fabric-option active" data-fabric="cotton" data-img="images/cotton fabric shirt.jpg">
+                                    <div class="fabric-sample" style="background-image: url('images/cotton fabric shirt.jpg')"></div>
+                                    <span>Cotton</span>
+                                </div>
+                                <div class="fabric-option" data-fabric="linen" data-img="images/lenin.jpg">
+                                    <div class="fabric-sample" style="background-image: url('images/lenin.jpg')"></div>
+                                    <span>Linen</span>
+                                </div>
+                                <div class="fabric-option" data-fabric="silk" data-img="images/woolen.jpg">
+                                    <div class="fabric-sample" style="background-image: url('images/woolen.jpg')"></div>
+                                    <span>Silk</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Color Section -->
+                        <div class="option-group">
+                            <h3>Color</h3>
+                            <div class="color-options">
+                                <input type="color" id="shirt-color" value="#2196f3" class="color-picker">
+                                <div class="preset-colors">
+                                    <div class="preset-color" style="background-color: #ffffff;" data-color="#ffffff"></div>
+                                    <div class="preset-color" style="background-color: #2196f3;" data-color="#2196f3"></div>
+                                    <div class="preset-color" style="background-color: #f44336;" data-color="#f44336"></div>
+                                    <div class="preset-color" style="background-color: #4caf50;" data-color="#4caf50"></div>
+                                    <div class="preset-color" style="background-color: #ffeb3b;" data-color="#ffeb3b"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Pockets Section -->
+                        <div class="option-group">
+                            <h3>Pockets</h3>
+                            <div class="pocket-options">
+                                <div class="pocket-option active" data-pocket="standard">
+                                    <div class="pocket-icon standard"></div>
+                                    <span>Standard</span>
+                                </div>
+                                <div class="pocket-option" data-pocket="double">
+                                    <div class="pocket-icon double"></div>
+                                    <span>Double</span>
+                                </div>
+                                <div class="pocket-option" data-pocket="hidden">
+                                    <div class="pocket-icon hidden"></div>
+                                    <span>Hidden</span>
+                                </div>
+                                <div class="pocket-option" data-pocket="none">
+                                    <div class="pocket-icon none"></div>
+                                    <span>No Pocket</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Collar Style Section -->
+                        <div class="option-group">
+                            <h3>Collar Style</h3>
+                            <div class="collar-options">
+                                <div class="collar-option active" data-collar="classic">
+                                    <div class="collar-icon classic"></div>
+                                    <span>Classic</span>
+                                </div>
+                                <div class="collar-option" data-collar="button-down">
+                                    <div class="collar-icon button-down"></div>
+                                    <span>Button Down</span>
+                                </div>
+                                <div class="collar-option" data-collar="mandarin">
+                                    <div class="collar-icon mandarin"></div>
+                                    <span>Mandarin</span>
+                                </div>
+                                <div class="collar-option" data-collar="band">
+                                    <div class="collar-icon band"></div>
+                                    <span>Band</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+
+        <footer>
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <h2>ENARMOUS</h2>
+                    <p>Custom Fashion Design</p>
+                </div>
+                <div class="footer-links">
+                    <div class="link-group">
+                        <h3>Shop</h3>
+                        <a href="design.html">Custom Design</a>
+                        <a href="#">Ready-to-Wear</a>
+                        <a href="#">Collections</a>
+                    </div>
+                    <div class="link-group">
+                        <h3>Support</h3>
+                        <a href="#">Help Center</a>
+                        <a href="#">Size Guide</a>
+                        <a href="#">Contact Us</a>
+                    </div>
+                    <div class="link-group">
+                        <h3>Company</h3>
+                        <a href="#">About Us</a>
+                        <a href="#">Careers</a>
+                        <a href="#">Blog</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Enarmous. All rights reserved.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-pinterest"></i></a>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script>
+        // Design functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Current design state
+            let currentDesign = {
+                pants: {
+                    type: 'Pants',
+                    fabric: 'cotton',
+                    color: '#2e7d32',
+                    fit: 'slim',
+                    pockets: 'standard',
+                    measurements: {
+                        waist: 32,
+                        hip: 38,
+                        inseam: 30,
+                        length: 40
+                    },
+                    price: 22.99,
+                    image: 'images/cotton_pant_fab.jpg'
+                },
+                shirt: {
+                    type: 'Shirt',
+                    fabric: 'cotton',
+                    color: '#2196f3',
+                    fit: 'slim',
+                    pockets: 'standard',
+                    collar: 'classic',
+                    sleeve: 'long',
+                    measurements: {
+                        neck: 15,
+                        chest: 40,
+                        length: 28
+                    },
+                    price: 20.99,
+                    image: 'images/cotton fabric shirt.jpg'
+                }
+            };
+
+            // Zoom functionality
+            function setupZoom(designType) {
+                const preview = document.getElementById(`${designType}-preview`);
+                const wrapper = preview.querySelector('.garment-wrapper');
+                const zoomInBtn = preview.querySelector('.zoom-in');
+                const zoomOutBtn = preview.querySelector('.zoom-out');
+                const resetBtn = preview.querySelector('.reset-zoom');
+                
+                let scale = 1;
+                const minScale = 0.5;
+                const maxScale = 3;
+                const scaleStep = 0.1;
+                
+                function updateZoom() {
+                    wrapper.style.transform = `scale(${scale})`;
+                }
+                
+                zoomInBtn.addEventListener('click', function() {
+                    if (scale < maxScale) {
+                        scale += scaleStep;
+                        updateZoom();
+                    }
+                });
+                
+                zoomOutBtn.addEventListener('click', function() {
+                    if (scale > minScale) {
+                        scale -= scaleStep;
+                        updateZoom();
+                    }
+                });
+                
+                resetBtn.addEventListener('click', function() {
+                    scale = 1;
+                    updateZoom();
+                });
+            }
+
+            // Design selector
+            const designOptions = document.querySelectorAll('.design-option');
+            const designSections = document.querySelectorAll('.design-section');
+
+            designOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    const design = this.dataset.design;
+                    
+                    // Update active states
+                    designOptions.forEach(opt => opt.classList.remove('active'));
+                    designSections.forEach(section => section.classList.remove('active'));
+                    
+                    this.classList.add('active');
+                    document.getElementById(`${design}-design`).classList.add('active');
+                });
+            });
+
+            // Color functionality
+            function setupColorPicker(designType) {
+                const colorPicker = document.getElementById(`${designType}-color`);
+                const baseImage = document.getElementById(`${designType}-base`);
+                const presetColors = document.querySelectorAll(`#${designType}-design .preset-color`);
+
+                // Color picker change
+                colorPicker.addEventListener('input', function() {
+                    const color = this.value;
+                    // Apply color filter to base image
+                    baseImage.style.filter = `hue-rotate(${getHueRotation(color)}) saturate(1.5)`;
+                    currentDesign[designType].color = color;
+                });
+
+                // Preset colors
+                presetColors.forEach(preset => {
+                    preset.addEventListener('click', function() {
+                        const color = this.dataset.color;
+                        colorPicker.value = color;
+                        baseImage.style.filter = `hue-rotate(${getHueRotation(color)}) saturate(1.5)`;
+                        currentDesign[designType].color = color;
+                    });
+                });
+            }
+
+            // Helper function to calculate hue rotation from hex color
+            function getHueRotation(hexColor) {
+                // Convert hex to RGB
+                let r = parseInt(hexColor.substr(1, 2), 16) / 255;
+                let g = parseInt(hexColor.substr(3, 2), 16) / 255;
+                let b = parseInt(hexColor.substr(5, 2), 16) / 255;
+                
+                // Find max and min values
+                let max = Math.max(r, g, b);
+                let min = Math.min(r, g, b);
+                let h;
+                
+                // Calculate hue
+                if (max === min) {
+                    h = 0; // achromatic
+                } else {
+                    let d = max - min;
+                    switch (max) {
+                        case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+                        case g: h = (b - r) / d + 2; break;
+                        case b: h = (r - g) / d + 4; break;
+                    }
+                    h /= 6;
+                }
+                
+                // Convert to degrees
+                return (h * 360) + 'deg';
+            }
+
+            // Fabric selection
+            function setupFabricSelection(designType) {
+                const fabricOptions = document.querySelectorAll(`#${designType}-design .fabric-option`);
+                const baseImage = document.getElementById(`${designType}-base`);
+
+                fabricOptions.forEach(option => {
+                    option.addEventListener('click', function() {
+                        // Update active state
+                        fabricOptions.forEach(opt => opt.classList.remove('active'));
+                        this.classList.add('active');
+                        
+                        // Update fabric
+                        const fabric = this.dataset.fabric;
+                        const fabricImg = this.dataset.img;
+                        baseImage.src = fabricImg;
+                        currentDesign[designType].fabric = fabric;
+                        currentDesign[designType].image = fabricImg;
+                        
+                        // Reset color filter when changing fabric
+                        const colorPicker = document.getElementById(`${designType}-color`);
+                        baseImage.style.filter = `hue-rotate(${getHueRotation(colorPicker.value)}) saturate(1.5)`;
+                    });
+                });
+            }
+
+            // Fit selection
+            function setupFitSelection(designType) {
+                const fitOptions = document.querySelectorAll(`#${designType}-design .fit-option`);
+
+                fitOptions.forEach(option => {
+                    option.addEventListener('click', function() {
+                        fitOptions.forEach(opt => opt.classList.remove('active'));
+                        this.classList.add('active');
+                        currentDesign[designType].fit = this.dataset.fit;
+                    });
+                });
+            }
+
+            // Pockets selection
+            function setupPocketSelection(designType) {
+                const pocketOptions = document.querySelectorAll(`#${designType}-design .pocket-option`);
+
+                pocketOptions.forEach(option => {
+                    option.addEventListener('click', function() {
+                        pocketOptions.forEach(opt => opt.classList.remove('active'));
+                        this.classList.add('active');
+                        currentDesign[designType].pockets = this.dataset.pocket;
+                    });
+                });
+            }
+
+            // Collar selection (shirt only)
+            function setupCollarSelection() {
+                const collarOptions = document.querySelectorAll('#shirt-design .collar-option');
+
+                collarOptions.forEach(option => {
+                    option.addEventListener('click', function() {
+                        collarOptions.forEach(opt => opt.classList.remove('active'));
+                        this.classList.add('active');
+                        currentDesign.shirt.collar = this.dataset.collar;
+                    });
+                });
+            }
+
+            // Sleeve selection (shirt only)
+            function setupSleeveSelection() {
+                const sleeveSelect = document.getElementById('sleeve');
+                
+                sleeveSelect.addEventListener('change', function() {
+                    currentDesign.shirt.sleeve = this.value;
+                });
+            }
+
+            // Measurements
+            function setupMeasurements(designType) {
+                const measurementInputs = document.querySelectorAll(`#${designType}-design input[type="range"]`);
+                
+                measurementInputs.forEach(input => {
+                    const valueDisplay = document.getElementById(`${input.id}-value`);
+                    
+                    // Update display
+                    input.addEventListener('input', function() {
+                        valueDisplay.textContent = this.value;
+                        currentDesign[designType].measurements[this.id] = parseFloat(this.value);
+                    });
+                });
+            }
+
+            // Add to cart functionality
+            function setupAddToCart(designType) {
+                const addToCartBtn = document.getElementById(`add-${designType}-to-cart`);
+                
+                addToCartBtn.addEventListener('click', function() {
+                    const design = currentDesign[designType];
+                    const cartItem = {
+                        id: Date.now(),
+                        title: `Custom ${design.type}`,
+                        price: design.price,
+                        image: design.image,
+                        quantity: 1,
+                        designData: {
+                            type: design.type,
+                            fabric: design.fabric,
+                            color: design.color,
+                            fit: design.fit,
+                            pockets: design.pockets,
+                            ...design.measurements,
+                            ...(design.collar && { collar: design.collar }),
+                            ...(design.sleeve && { sleeve: design.sleeve })
+                        }
+                    };
+
+                    // Get current cart
+                    let cart = JSON.parse(localStorage.getItem('enarmous-cart')) || [];
+                    
+                    // Add to cart
+                    cart.push(cartItem);
+                    localStorage.setItem('enarmous-cart', JSON.stringify(cart));
+                    
+                    // Update cart count
+                    updateCartCount();
+                    
+                    // Show notification
+                    showNotification(`${design.type} added to cart!`, 'success');
+                    
+                    // Button animation
+                    this.classList.add('button-click');
+                    setTimeout(() => {
+                        this.classList.remove('button-click');
+                    }, 300);
+                });
+            }
+
+            // Share with tailor functionality
+            function setupShareWithTailor(designType) {
+                const shareBtn = document.getElementById(`share-${designType}-design`);
+                
+                shareBtn.addEventListener('click', function() {
+                    const design = currentDesign[designType];
+                    
+                    // Prepare design details for email
+                    let designDetails = `CUSTOM ${design.type.toUpperCase()} DESIGN\n\n`;
+                    designDetails += `Fabric: ${design.fabric}\n`;
+                    designDetails += `Color: ${design.color}\n`;
+                    designDetails += `Fit: ${design.fit}\n`;
+                    designDetails += `Pockets: ${design.pockets}\n`;
+                    
+                    // Add measurements
+                    designDetails += `\nMEASUREMENTS:\n`;
+                    for (const [key, value] of Object.entries(design.measurements)) {
+                        designDetails += `${key.charAt(0).toUpperCase() + key.slice(1)}: ${value} inches\n`;
+                    }
+                    
+                    // Add shirt-specific details
+                    if (design.collar) {
+                        designDetails += `Collar: ${design.collar}\n`;
+                    }
+                    if (design.sleeve) {
+                        designDetails += `Sleeve: ${design.sleeve}\n`;
+                    }
+                    
+                    designDetails += `\nPrice: $${design.price}`;
+                    
+                    // Create mailto link
+                    const subject = `Custom ${design.type} Design - ${new Date().toLocaleDateString()}`;
+                    const mailtoLink = `mailto:abdulkadher19770407@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(designDetails)}`;
+                    
+                    // Open email client
+                    window.location.href = mailtoLink;
+                    
+                    // Show notification
+                    showNotification(`${design.type} design shared with tailor!`, 'success');
+                    
+                    // Button animation
+                    this.classList.add('button-click');
+                    setTimeout(() => {
+                        this.classList.remove('button-click');
+                    }, 300);
+                });
+            }
+
+            // Update cart count
+            function updateCartCount() {
+                const cart = JSON.parse(localStorage.getItem('enarmous-cart')) || [];
+                const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+                document.querySelector('.cart-count').textContent = totalItems;
+            }
+
+            // Show notification
+            function showNotification(message, type = 'success') {
+                // Remove existing notifications
+                const existingNotifications = document.querySelectorAll('.notification');
+                existingNotifications.forEach(notification => notification.remove());
+
+                const notification = document.createElement('div');
+                notification.className = `notification ${type === 'error' ? 'error' : ''}`;
+                notification.innerHTML = `
+                    <span>${message}</span>
+                    <button class="close-notification">&times;</button>
+                `;
+                
+                document.body.appendChild(notification);
+                
+                // Auto remove after 3 seconds
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.remove();
+                    }
+                }, 3000);
+                
+                // Close button
+                notification.querySelector('.close-notification').addEventListener('click', () => {
+                    notification.remove();
+                });
+            }
+
+            // Initialize all functionality
+            setupZoom('pants');
+            setupZoom('shirt');
+            setupColorPicker('pants');
+            setupColorPicker('shirt');
+            setupFabricSelection('pants');
+            setupFabricSelection('shirt');
+            setupFitSelection('pants');
+            setupFitSelection('shirt');
+            setupPocketSelection('pants');
+            setupPocketSelection('shirt');
+            setupCollarSelection();
+            setupSleeveSelection();
+            setupMeasurements('pants');
+            setupMeasurements('shirt');
+            setupAddToCart('pants');
+            setupAddToCart('shirt');
+            setupShareWithTailor('pants');
+            setupShareWithTailor('shirt');
+
+            // Initialize cart count
+            updateCartCount();
+        });
+    </script>
+</body>
+</html>
